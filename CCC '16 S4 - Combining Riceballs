@@ -1,0 +1,66 @@
+import sys
+input = sys.stdin.readline
+
+def solve():
+    n = int(input())
+    
+    if n == 0:
+        print(0)
+        return
+
+    arr = list(map(int, input().split()))
+
+    # prefix sum
+    ps = [0] * (n + 1)
+    for i in range(n):
+        ps[i + 1] = ps[i] + arr[i]
+
+    dp = [[False] * n for _ in range(n)]
+
+    # single elements always work
+    for i in range(n):
+        dp[i][i] = True
+
+    res = max(arr)
+
+    for length in range(2, n + 1):
+        for l in range(n):
+            r = l + length - 1
+            if r >= n:
+                break
+
+            i = l
+            j = r
+
+            while i < j:
+                left = ps[i + 1] - ps[l]
+                right = ps[r + 1] - ps[j]
+
+                if left == right:
+                    ok = False
+
+                    if dp[l][i] and dp[j][r]:
+                        if i + 1 == j:
+                            ok = True
+                        elif dp[i + 1][j - 1]:
+                            ok = True
+
+                    if ok:
+                        dp[l][r] = True
+                        total = ps[r + 1] - ps[l]
+                        if total > res:
+                            res = total
+                        break
+
+                    i += 1
+                    j -= 1
+
+                elif left < right:
+                    i += 1
+                else:
+                    j -= 1
+
+    print(res)
+
+
+solve()
