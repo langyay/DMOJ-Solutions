@@ -1,0 +1,50 @@
+import sys
+input = sys.stdin.readline
+
+def parse(s, i):
+    n = len(s)
+
+    if i >= n:
+        return -1
+
+    # handle A or B case
+    if s[i] == 'A':
+        j = i + 1
+    elif s[i] == 'B':
+        j = parse(s, i + 1)
+        if j == -1:
+            return -1
+        if j >= n or s[j] != 'S':
+            return -1
+        j += 1
+    else:
+        return -1
+
+    # optional N + word part
+    if j < n and s[j] == 'N':
+        nxt = parse(s, j + 1)
+        if nxt == -1:
+            return -1
+        j = nxt
+
+    return j
+
+
+def check(s):
+    return parse(s, 0) == len(s)
+
+
+def main():
+    while True:
+        line = input().strip()
+        if line == "X":
+            break
+
+        if check(line):
+            print("YES")
+        else:
+            print("NO")
+
+
+if __name__ == "__main__":
+    main()
