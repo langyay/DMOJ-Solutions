@@ -1,0 +1,18 @@
+import sys
+
+coldest = float('inf')
+name = ""
+
+for line in sys.stdin:
+    parts = line.split()
+    city = parts[0]
+    temp = int(parts[1])
+
+    if temp < coldest:
+        coldest = temp
+        name = city
+
+    if city == "Waterloo":
+        break
+
+print(name)
