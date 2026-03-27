@@ -1,0 +1,59 @@
+s = input().strip()
+n = len(s)
+
+# count how many of each
+numL = s.count('L')
+numM = s.count('M')
+numS = s.count('S')
+
+# zones: 0 = L, 1 = M, 2 = S
+cnt = [[0] * 3 for _ in range(3)]
+
+def get_id(c):
+    if c == 'L':
+        return 0
+    elif c == 'M':
+        return 1
+    else:
+        return 2
+
+# fill counts
+for i in range(n):
+    c = s[i]
+
+    if i < numL:
+        z = 0
+    elif i < numL + numM:
+        z = 1
+    else:
+        z = 2
+
+    cnt[z][get_id(c)] += 1
+
+ans = 0
+
+# fix direct swaps first
+
+# L <-> M
+t = min(cnt[0][1], cnt[1][0])
+ans += t
+cnt[0][1] -= t
+cnt[1][0] -= t
+
+# L <-> S
+t = min(cnt[0][2], cnt[2][0])
+ans += t
+cnt[0][2] -= t
+cnt[2][0] -= t
+
+# M <-> S
+t = min(cnt[1][2], cnt[2][1])
+ans += t
+cnt[1][2] -= t
+cnt[2][1] -= t
+
+# whatever is left forms 3-cycles
+left = cnt[0][1] + cnt[0][2]
+ans += 2 * left
+
+print(ans)
