@@ -1,0 +1,60 @@
+import sys
+
+def main():
+    input = sys.stdin.readline
+
+    N, M = map(int, input().split())
+    lights = list(map(int, input().split()))
+    friends = list(map(int, input().split()))
+
+    lights.sort()
+    friends.sort()
+
+    total = 0
+    i = 0  # pointer for friends
+
+    # friends before first light
+    if i < M and friends[i] < lights[0]:
+        start = i
+        while i < M and friends[i] < lights[0]:
+            i += 1
+        total += lights[0] - friends[start]
+
+    # handle gaps between lights
+    for t in range(N - 1):
+        L = lights[t]
+        R = lights[t + 1]
+
+        # no friends in this segment
+        if i >= M or friends[i] >= R:
+            continue
+
+        start = i
+        while i < M and friends[i] < R:
+            i += 1
+
+        prev = L
+        biggest = 0
+
+        for j in range(start, i):
+            diff = friends[j] - prev
+            if diff > biggest:
+                biggest = diff
+            prev = friends[j]
+
+        # last gap to right light
+        diff = R - prev
+        if diff > biggest:
+            biggest = diff
+
+        total += (R - L) - biggest
+
+    # friends after last light
+    if i < M:
+        total += friends[-1] - lights[-1]
+
+    print(total)
+
+
+if __name__ == "__main__":
+    main()
